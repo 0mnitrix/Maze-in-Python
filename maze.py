@@ -1,10 +1,7 @@
-import turtle
 import random
-import time
 
 WALL = 1
 PATH = 0
-VISITED = 2
 
 def generate_maze(width, height):
     maze = [[WALL for _ in range(width)] for _ in range(height)]
@@ -22,44 +19,41 @@ def generate_maze(width, height):
 
     maze[1][1] = PATH
     carve(1, 1)
-    maze[1][0] = PATH  # вход
+    maze[1][0] = PATH  # старт
     maze[height - 2][width - 1] = PATH  # выход
     return maze
 
-def draw_maze(maze, cell_size=20):
-    turtle.bgcolor("black")
-    t = turtle.Turtle()
-    t.speed(0)
-    t.penup()
-    t.hideturtle()
-
+def print_maze(maze, start, end):
     for y in range(len(maze)):
+        row = ''
         for x in range(len(maze[0])):
-            if maze[y][x] == WALL:
-                draw_cell(t, x, y, cell_size, "white")
+            if (x, y) == start:
+                row += 'S'
+            elif (x, y) == end:
+                row += 'E'
+            elif maze[y][x] == WALL:
+                row += '#'
+            else:
+                row += ' '
+        print(row)
 
-def draw_cell(t, x, y, size, color):
-    t.goto(x * size - 200, 200 - y * size)
-    t.fillcolor(color)
-    t.begin_fill()
-    for _ in range(4):
-        t.pendown()
-        t.forward(size)
-        t.right(90)
-    t.penup()
-    t.end_fill()
+def get_user_input():
+    while True:
+        try:
+            width = int(input("Введите ширину лабиринта (нечётное число ≥ 11): "))
+            height = int(input("Введите высоту лабиринта (нечётное число ≥ 11): "))
+            if width >= 11 and height >= 11 and width % 2 == 1 and height % 2 == 1:
+                return width, height
+            else:
+                print("Размеры должны быть нечётными и ≥ 11.")
+        except ValueError:
+            print("Введите целые числа.")
 
-def solve_maze(maze, x, y, end_x, end_y, cell_size, t):
-    if x == end_x and y == end_y:
-        draw_cell(t, x, y, cell_size, "green")
-        return True
+if __name__ == "__main__":
+    width, height = get_user_input()
+    maze = generate_maze(width, height)
+    start = (0, 1)
+    end = (width - 1, height - 2)
 
-    if maze[y][x] != PATH:
-        return False
-
-    maze[y][x] = VISITED
-    draw_cell(t, x, y, cell_size, "blue")
-    time.sleep(0.02)
-
-    for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
-        nx, ny = x
+    print("\nСгенерированный лабиринт:\n")
+    print_maze(maze, start, end)
