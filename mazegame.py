@@ -1,7 +1,7 @@
 import random
 
 def generate_maze(rows=10, cols=10):
-    maze = [['# '] * (2 * cols + 1) for _ in range(2 * rows + 1)]
+    maze = [[' # '] * (2 * cols + 1) for _ in range(2 * rows + 1)]
     visited = [[False] * cols for _ in range(rows)]
 
     def carve(x, y):
@@ -28,3 +28,28 @@ def print_maze(maze):
 
 maze = generate_maze()
 print_maze(maze)
+import turtle
+
+def draw_cell(t, x, y, size, color):
+    t.goto(x * size - 200, 200 - y * size)
+    t.fillcolor(color)
+    t.begin_fill()
+    for _ in range(4):
+        t.pendown()
+        t.forward(size)
+        t.right(90)
+    t.penup()
+    t.end_fill()
+
+def draw_maze(maze, cell_size=20):
+    turtle.bgcolor("black")
+    t = turtle.Turtle()
+    t.speed(0)
+    t.penup()
+    t.hideturtle()
+
+    for y in range(len(maze)):
+        for x in range(len(maze[0])):
+            if maze[y][x] == 1:  # WALL
+                draw_cell(t, x, y, cell_size, "white")
+
